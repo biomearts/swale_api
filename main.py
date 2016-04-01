@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os, sys, json
+import os, sys, json, markdown
 from housepy import config, log, server, util, process, strings
 
 process.secure_pid(os.path.abspath(os.path.join(os.path.dirname(__file__), "run")))
@@ -22,7 +22,18 @@ class Home(server.Handler):
             except Exception as e:
                 log.error(log.exc(e))
                 return self.error("Request malformed: %s" % e)        
-        return self.render("index.html")
+        readme = "README failed to load"
+        try:
+            with open("README.md") as f:
+                text = f.read()
+                readme = markdown.markdown(text)
+        except Exception as e:
+            log.error(log.exc(e))
+        return self.render("index.html", readme=readme)
+
+    def post(self, nop=None, nop2=None, nop3=None):
+        log.info("POST")
+        return self.text("OK")
 
 handlers = [
     (r"/?([^/]*)/?([^/]*)/?([^/]*)", Home),
