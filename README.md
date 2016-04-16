@@ -14,5 +14,6 @@
 - t_utc -- timestamp in UTC. If not included, the server supplies it (with microseconds)
 - anything else
 
-NOTE:
+### NOTE:
 - all field names will be automatically stripped of punctuation, spaces replaced with underscores, and lowercased
+- any nested types are dropped. Must be a flat hierarchy.

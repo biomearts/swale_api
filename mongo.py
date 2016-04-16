@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from housepy import config, log
-from pymongo import MongoClient, GEOSPHERE, ASCENDING, DESCENDING
+from pymongo import MongoClient, ASCENDING, DESCENDING
 
 mongo = config['mongo']
 client = MongoClient(mongo['host'], mongo['port'])

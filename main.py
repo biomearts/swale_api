@@ -33,7 +33,29 @@ class Home(server.Handler):
 
     def post(self, nop=None, nop2=None, nop3=None):
         log.info("POST")
-        return self.text("OK")
+        try:
+            data = json.loads(str(self.request.body, encoding='utf-8'))
+            log.info(data)
+            log.info(type(data))
+        except Exception as e:
+            log.error(log.exc(e))
+            return self.error()
+        for key in data.keys():
+            if type(key) is not str:
+                del data[key]
+            fixed_key = strings.slugify(strings.depunctuate(key, "_"))
+            if key != fixed_key:
+                data[fixed_key] = data[key]
+                del data[key]
+        log.info(json.dumps(data, indent=4))
+        try:
+            entry_id = self.db.entries.insert_one(data).inserted_id
+        except Exception as e:
+            log.error(log.exc(e))
+            return self.error("ERROR: %s" % e)
+        return self.text(str(entry_id))
+  
+
 
 handlers = [
     (r"/?([^/]*)/?([^/]*)/?([^/]*)", Home),
