@@ -34,6 +34,7 @@ class Home(server.Handler):
 
     def post(self, nop=None, nop2=None, nop3=None):
         log.info("POST")
+        self.set_header("Access-Control-Allow-Origin", "*")                        
         try:
             data = json.loads(str(self.request.body, encoding='utf-8'))
             log.info(data)
