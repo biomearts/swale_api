@@ -15,8 +15,9 @@ class Home(server.Handler):
                 start_t = util.timestamp(start)
                 end = util.parse_date(end, tz="America/New_York")
                 end_t = util.timestamp(end)
-                results = self.db.entries.find({'t_utc': {'$gt': start_t, '$lt': end_t}, 'type': type_})
+                results = self.db.entries.find({'t_utc': {'$gt': start_t, '$lt': end_t}, 'type': type_}).sort('t_utc')
                 data = {'query': {'start': start, 'end': end, 'type': type_}}
+                log.info(data)
                 data['results'] = list(results)
                 return self.json(data)
             except Exception as e:
@@ -47,6 +48,8 @@ class Home(server.Handler):
             if key != fixed_key:
                 data[fixed_key] = data[key]
                 del data[key]
+        if 't_utc' not in data:
+            data['t_utc'] = util.timestamp()
         log.info(json.dumps(data, indent=4))
         try:
             entry_id = self.db.entries.insert_one(data).inserted_id
