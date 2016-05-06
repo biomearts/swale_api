@@ -1,0 +1,3 @@
+- query types available
+- limit responses
+- order responses (make sure it is)
