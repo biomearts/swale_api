@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os, sys, json, markdown
+import os, sys, json, markdown, actions
 from housepy import config, log, server, util, process, strings
 
 process.secure_pid(os.path.abspath(os.path.join(os.path.dirname(__file__), "run")))
@@ -11,14 +11,10 @@ class Home(server.Handler):
         self.set_header("Access-Control-Allow-Origin", "*")
         if len(start) and len(end) and len(type_):
             try:
-                start = util.parse_date(start, tz="America/New_York")
-                start_t = util.timestamp(start)
-                end = util.parse_date(end, tz="America/New_York")
-                end_t = util.timestamp(end)
-                results = self.db.entries.find({'t_utc': {'$gt': start_t, '$lt': end_t}, 'type': type_}).sort('t_utc')
+                result = actions.retrieve(self.db, start, end, type_)
                 data = {'query': {'start': start, 'end': end, 'type': type_}}
                 log.info(data)
-                data['results'] = list(results)
+                data['results'] = results
                 return self.json(data)
             except Exception as e:
                 log.error(log.exc(e))
@@ -42,18 +38,8 @@ class Home(server.Handler):
         except Exception as e:
             log.error(log.exc(e))
             return self.error()
-        for key in data.keys():
-            if type(key) is not str:
-                del data[key]
-            fixed_key = strings.slugify(strings.depunctuate(key, "_"))
-            if key != fixed_key:
-                data[fixed_key] = data[key]
-                del data[key]
-        if 't_utc' not in data:
-            data['t_utc'] = util.timestamp()
-        log.info(json.dumps(data, indent=4))
         try:
-            entry_id = self.db.entries.insert_one(data).inserted_id
+            entry_id = actions.insert(self.db, data)
         except Exception as e:
             log.error(log.exc(e))
             return self.error("ERROR: %s" % e)
