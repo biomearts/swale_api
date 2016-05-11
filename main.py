@@ -12,7 +12,7 @@ class Home(server.Handler):
         if len(start) and len(end) and len(type_):
             try:
                 result = actions.retrieve(self.db, start, end, type_)
-                data = {'query': {'start': start, 'end': end, 'type': type_}}
+                data = {'query': {'start': start, 'end': end, 'type': type_}} # field, # output
                 log.info(data)
                 data['results'] = results
                 return self.json(data)
