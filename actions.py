@@ -21,6 +21,8 @@ def insert(db, data):
     return entry_id
 
 def retrieve(db, type_, start, end, filters):
+    if filters == None:
+        filters = {}
     types = [clean(type_) for type_ in type_.split(",")]    
     start_t = 0 if start == "*" else util.timestamp(util.parse_date(start, tz=config['tz']))
     end_t = 4102444800 if end == "*" else util.timestamp(util.parse_date(end, tz=config['tz']))

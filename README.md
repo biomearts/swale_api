@@ -6,9 +6,7 @@
 `start` and `end` are any date format in `America/New_York` timezone. Can be `*` for open ended.
 `type` is the primary type, may be a comma-separated list 
 `output` is the desired output format, optional (not implemented -- always json)
-`field` is a filter by the `value` of some other parameter (not implemented)
-
-(put type first, then start and end, then a resolution zoom)
+`field` is a filter by the `value` of some property of the data
 
 ## POST data
 

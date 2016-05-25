@@ -11,9 +11,9 @@ This is equivalent to the web interface, but if you import it into your script, 
 """
 
 parser = argparse.ArgumentParser(description="Retrieve a signal")
+parser.add_argument("-t", "--type",  type=str, nargs=1, required=True)
 parser.add_argument("-s", "--start", type=str, nargs=1, required=True)
 parser.add_argument("-e", "--end", type=str, nargs=1, required=True)
-parser.add_argument("-t", "--type",  type=str, nargs=1, required=True)
 parser.add_argument("-f", "--field",  type=str, nargs="?")
 parser.add_argument("-o", "--output",  type=str, nargs="?")
 args = vars(parser.parse_args())
@@ -21,11 +21,11 @@ args = {key: value[0] if (value is not None) else None for (key, value) in args.
 if 'type' in args:
     args['type_'] = args['type']
     del args['type']
-print(args)
+# print(args)
 
 
 
-result, start_t, end_t = actions.retrieve(db, args['start'], args['end'], args['type_'])
+results, start_t, end_t = actions.retrieve(db, args['type_'], args['start'], args['end'], None)
 
 
 ## this is unnecessary

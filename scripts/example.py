@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
 import json
-from cli import result
+from cli import results
 
-print(json.dumps(result, indent=4, default=lambda obj: str(obj)))
+print(json.dumps(results, indent=4, default=lambda obj: str(obj)))
