@@ -7,14 +7,20 @@ process.secure_pid(os.path.abspath(os.path.join(os.path.dirname(__file__), "run"
 
 class Home(server.Handler):
 
-    def get(self, start=None, end=None, type_=None):
+    def get(self, type_=None, start=None, end=None, nop=None):
         self.set_header("Access-Control-Allow-Origin", "*")
-        if len(start) and len(end) and len(type_):
+        if len(type_):
+            if not len(start):
+                start = "*"
+            if not len(end):
+                end = "*"
             try:
-                result = actions.retrieve(self.db, start, end, type_)
-                data = {'query': {'start': start, 'end': end, 'type': type_}} # field, # output
-                log.info(data)
+                filters = {key: strings.as_numeric(value[0]) for (key, value) in self.request.arguments.items()}
+                results, start_t, end_t = actions.retrieve(self.db, type_, start, end, filters)
+                data = {'query': {'types': type_, 'start': util.datestring(start_t, tz=config['tz']), 'end': util.datestring(end_t, tz=config['tz']), 'filters': filters}}
+                # log.info(data)
                 data['results'] = results
+                data['count'] = len(results)
                 return self.json(data)
             except Exception as e:
                 log.error(log.exc(e))
@@ -28,7 +34,7 @@ class Home(server.Handler):
             log.error(log.exc(e))
         return self.render("index.html", readme=readme)
 
-    def post(self, nop=None, nop2=None, nop3=None):
+    def post(self, nop=None, nop2=None, nop3=None, nop4=None):
         log.info("POST")
         self.set_header("Access-Control-Allow-Origin", "*")                        
         try:
@@ -48,7 +54,7 @@ class Home(server.Handler):
 
 
 handlers = [
-    (r"/?([^/]*)/?([^/]*)/?([^/]*)", Home),
+    (r"/?([^/]*)/?([^/]*)/?([^/]*)/?", Home),
 ]    
 
 server.start(handlers)

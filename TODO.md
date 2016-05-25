@@ -1,1 +1,3 @@
 - query types available
+- stars for dates
+- allow multiple types and fields (with stars)

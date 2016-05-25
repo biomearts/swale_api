@@ -25,7 +25,7 @@ print(args)
 
 
 
-result = actions.retrieve(db, args['start'], args['end'], args['type_'])
+result, start_t, end_t = actions.retrieve(db, args['start'], args['end'], args['type_'])
 
 
 ## this is unnecessary
