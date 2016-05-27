@@ -10,12 +10,16 @@ def insert(db, data):
     for key in data.keys():
         if type(key) is not str:
             del data[key]
+            continue
         clean_key = clean(key)
         if key != clean_key:
             data[clean_key] = data[key]
             del data[key]
+            key = clean_key
+        data[key] = strings.as_numeric(data[key])
     if 't_utc' not in data:
         data['t_utc'] = util.timestamp()
+    data['date'] = util.datestring(data['t_utc'], tz=config['tz'])
     log.info(json.dumps(data, indent=4))
     entry_id = db.entries.insert_one(data).inserted_id
     return entry_id
@@ -31,6 +35,7 @@ def retrieve(db, type_, start, end, filters):
     log.info("QUERY %s" % template)
     results = db.entries.find(template)
     results.sort('t_utc')
+    log.info("--> done")
     return list(results), start_t, end_t
 
 def clean(s):

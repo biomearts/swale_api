@@ -39,8 +39,6 @@ class Home(server.Handler):
         self.set_header("Access-Control-Allow-Origin", "*")                        
         try:
             data = json.loads(str(self.request.body, encoding='utf-8'))
-            log.info(data)
-            log.info(type(data))
         except Exception as e:
             log.error(log.exc(e))
             return self.error()

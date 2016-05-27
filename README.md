@@ -15,7 +15,7 @@
 
 
 ### Optional:
-- `t_utc` -- timestamp in `UTC`. If not included, the server supplies it (with microseconds)
+- `t_utc` -- timestamp in `UTC`. If not included, the server supplies it (with microseconds). `date` is automatically derived from this.
 - anything else
 
 ### Note:
@@ -35,6 +35,10 @@ This will run a argument parser identical to the web interface ahead of your scr
 
 Conceptually, this is like the temporal-only version of the Okavango field kit. ie, it's not GeoJSON, doesn't care about location.
 
+
+## Installation
+
+Requires housepy and signal_processing
 
 
 ### Copyright/License
