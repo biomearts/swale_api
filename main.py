@@ -27,7 +27,7 @@ class Home(server.Handler):
                 return self.error("Request malformed: %s" % e)        
         readme = "README failed to load"
         try:
-            with open("README.md") as f:
+            with open(os.path.abspath(os.path.join(os.path.dirname(__file__), "README.md"))) as f:
                 text = f.read()
                 readme = markdown.markdown(text)
         except Exception as e:
