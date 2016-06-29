@@ -4,3 +4,4 @@ __pycache__
 run
 *.pem
 signal_processing
+logs
