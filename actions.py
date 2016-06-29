@@ -29,7 +29,7 @@ def retrieve(db, type_, start, end, filters):
         filters = {}
     types = [clean(type_) for type_ in type_.split(",")]    
     start_t = 0 if start == "*" else util.timestamp(util.parse_date(start, tz=config['tz']))
-    end_t = 4102444800 if end == "*" else util.timestamp(util.parse_date(end, tz=config['tz']))
+    end_t = sys.maxsize if end == "*" else util.timestamp(util.parse_date(end, tz=config['tz']))
     template = {'t_utc': {'$gt': start_t, '$lt': end_t}, '$or': [{'type': type_} for type_ in types]}
     template.update(filters)
     log.info("QUERY %s" % template)
