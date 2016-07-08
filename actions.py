@@ -27,7 +27,7 @@ def insert(db, data):
 def retrieve(db, source, start, end, filters, mod=None):
     if filters == None:
         filters = {}
-    sources = [clean(sources) for source in source.split(",")]    
+    sources = [clean(source) for source in source.split(",")]    
     start_t = 0 if start == "*" else util.timestamp(util.parse_date(start, tz=config['tz']))
     end_t = min(2147483647, sys.maxsize) if end == "*" else util.timestamp(util.parse_date(end, tz=config['tz']))
     template = {'t_utc': {'$gt': start_t, '$lt': end_t}, '$or': [{'source': source} for source in sources]}
