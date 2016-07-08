@@ -7,17 +7,17 @@ process.secure_pid(os.path.abspath(os.path.join(os.path.dirname(__file__), "run"
 
 class Home(server.Handler):
 
-    def get(self, type_=None, start=None, end=None, nop=None):
+    def get(self, source=None, start=None, end=None, mod=None):
         self.set_header("Access-Control-Allow-Origin", "*")
-        if len(type_):
+        if len(source):
             if not len(start):
                 start = "*"
             if not len(end):
                 end = "*"
             try:
                 filters = {key: strings.as_numeric(value[0]) for (key, value) in self.request.arguments.items()}
-                results, start_t, end_t = actions.retrieve(self.db, type_, start, end, filters)
-                data = {'query': {'types': type_, 'start': util.datestring(start_t, tz=config['tz']), 'end': util.datestring(end_t, tz=config['tz']), 'filters': filters}}
+                results, start_t, end_t = actions.retrieve(self.db, source, start, end, filters, (strings.slugify(mod) if (mod is not None and len(mod)) else None))
+                data = {'query': {'sources': source, 'start': util.datestring(start_t, tz=config['tz']), 'end': util.datestring(end_t, tz=config['tz']), 'filters': filters}}
                 # log.info(data)
                 data['results'] = results
                 data['count'] = len(results)

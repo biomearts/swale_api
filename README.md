@@ -1,9 +1,9 @@
 # Swale API
 
 ## GET data
-`/[type]/[start]/[end]/[output?]/?[field]=[value]`
+`/[source]/[start]/[end]/[output?]/?[field]=[value]`
 
-- `type` is the primary type, may be a comma-separated list  
+- `source` is the primary source, may be a comma-separated list  
 - `start` and `end` are any date format in `America/New_York` timezone (can be `*` for open-ended)  
 - `output` is the desired output format, optional (not implemented -- always json)  
 - `field` is a filter by the `value` of some property of the data  
@@ -11,7 +11,7 @@
 ## POST data
 
 ### Required:
-- `type`: what's the name of this data type?
+- `source`: what's the name of this data source?
 
 
 ### Optional:
@@ -20,7 +20,7 @@
 
 ### Note:
 - all field names will be automatically stripped of punctuation, spaces replaced with underscores, and lowercased
-- any nested types are dropped. Must be a flat hierarchy.
+- any nested sources are dropped. Must be a flat hierarchy.
 - `t_utc` is `UTC` even though queries are in `America/New_York`
 
 

@@ -14,7 +14,7 @@ interval = 3600
 fields = {}
 for result in results:
     for field, value in result.items():
-        if field == "_id" or field == "t_utc" or field == "date" or field == "type":
+        if field == "_id" or field == "t_utc" or field == "date" or field == "source":
             continue
         if field not in fields:
             fields[field] = [], []
@@ -69,7 +69,7 @@ print("--> done")
 
 one issue is that if a particular property doesnt occur in an interval, it's not there.
 I guess that makes sense.
-do we need to preserve "types" or something?
+do we need to preserve "sources" or something?
 
 bigger problem is what if the data type isnt averageable? ie, strings / booleans?
 

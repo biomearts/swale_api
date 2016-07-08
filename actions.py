@@ -24,16 +24,19 @@ def insert(db, data):
     entry_id = db.entries.insert_one(data).inserted_id
     return entry_id
 
-def retrieve(db, type_, start, end, filters):
+def retrieve(db, source, start, end, filters, mod=None):
     if filters == None:
         filters = {}
-    types = [clean(type_) for type_ in type_.split(",")]    
+    sources = [clean(sources) for source in source.split(",")]    
     start_t = 0 if start == "*" else util.timestamp(util.parse_date(start, tz=config['tz']))
     end_t = min(2147483647, sys.maxsize) if end == "*" else util.timestamp(util.parse_date(end, tz=config['tz']))
-    template = {'t_utc': {'$gt': start_t, '$lt': end_t}, '$or': [{'type': type_} for type_ in types]}
+    template = {'t_utc': {'$gt': start_t, '$lt': end_t}, '$or': [{'source': source} for source in sources]}
     template.update(filters)
-    log.info("QUERY %s" % template)
-    results = db.entries.find(template)
+    log.info("QUERY %s" % template)    
+    if mod == "unqiue":
+        results = db.entries.distinct(template)
+    else:
+        results = db.entries.find(template)
     results.sort('t_utc')
     log.info("--> done")
     return list(results), start_t, end_t
