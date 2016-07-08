@@ -15,8 +15,9 @@
 
 
 ### Optional:
-- `t_utc` -- timestamp in `UTC`. If not included, the server supplies it (with microseconds). `date` is automatically derived from this.
-- anything else. By convention, single-value data objects should have their primary field labeled `value`.
+- `t_utc` -- timestamp in `UTC`  
+if not included, the server supplies it (with microseconds). `date` is automatically derived from this.
+- anything else
 
 ### Note:
 - all field names will be automatically stripped of punctuation, spaces replaced with underscores, and lowercased
