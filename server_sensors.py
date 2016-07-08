@@ -32,7 +32,7 @@ def get_tide(entry):
                         (41.0783,-73.87): "Tarrytown"
                         }
 
-        result = list(db.entries.find({'type': "weather"}).sort([("t_utc", pymongo.DESCENDING)]).limit(1))[0]
+        result = list(db.entries.find({'type': "gps"}).sort([("t_utc", pymongo.DESCENDING)]).limit(1))[0]
         lat, lon = result['latitude'], result['longitude']
 
         closest_miles = 10000
