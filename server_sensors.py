@@ -6,13 +6,20 @@
 import sys
 sys.path.insert(0, "/usr/local/lib/python3.4/dist-packages/")
 
-import os, sys, json, pymongo, requests
+import os, sys, json, pymongo, requests, ephem
 from housepy import config, log, util, geo
 from mongo import db
 
 SOURCE = "server"
 
-entry = {'source': SOURCE}
+try:
+    entry = {'source': SOURCE}
+    result = list(db.entries.find({'source': "gps"}).sort([("t_utc", pymongo.DESCENDING)]).limit(1))[0]
+    lat, lon = result['latitude'], result['longitude']
+    entry.update({'latitude': result['latitude'], 'longitude': result['longitude']})
+except Exception as e:
+    log.info(log.exc(e))
+    exit()
 
 # Tarrytown, Hudson River, New York  (Tarrytown)
 # Madison Ave. Bridge, New York Current (Bronx)
@@ -29,6 +36,7 @@ entry = {'source': SOURCE}
 # state = requests.get(url).json()['location']['state']
 # city = requests.get(url).json()['location']['city'].strip("The ")
 
+
 def get_tide(entry):
 
     try:
@@ -38,13 +46,10 @@ def get_tide(entry):
                         (41.0783,-73.87): "Tarrytown"
                         }
 
-        result = list(db.entries.find({'source': "gps"}).sort([("t_utc", pymongo.DESCENDING)]).limit(1))[0]
-        lat, lon = result['latitude'], result['longitude']
-
         closest_miles = 10000
         closest_city = None
         for location, city in stations.items():
-            miles = geo.distance((lon, lat), (location[1], location[0]))
+            miles = geo.distance((entry['longitude'], entry['latitude']), (location[1], location[0]))
             if miles < closest_miles:
                 closest_miles = miles
                 closest_city = city
@@ -53,7 +58,7 @@ def get_tide(entry):
         data = response.json()
         t_utc, height = data['rawtide']['rawTideObs'][0]['epoch'], data['rawtide']['rawTideObs'][0]['height']
 
-        entry.update({'tide_station': city, 'tide_height_ft': height, 'latitude': result['latitude'], 'longitude': result['longitude']})
+        entry.update({'tide_station': city, 'tide_height_ft': height})
 
     except Exception as e:
         log.error(log.exc(e))
@@ -61,7 +66,26 @@ def get_tide(entry):
     return entry
 
 
+def get_sun(entry):
+    try:
+        observer = ephem.Observer()
+        observer.lon = entry['longitude']
+        observer.lat = entry['latitude']
+        observer.elevation = entry['altitude_m']
+        dt = datetime.datetime.utcnow()     # always UTC
+        observer.date = dt.strftime("%Y/%m/%d %H:%M:%S")
+        sun = ephem.Sun(observer)
+        radians = float(sun.alt)        
+        degrees = math.degrees(radians)
+        entry.update({'sun_deg': degrees})
+    except Exception as e:
+        log.error(e)
+    return entry
+
+
 entry = get_tide(entry)
+entry = get_sun(entry)
+
 
 try:
     response = requests.post("http://54.235.200.47", json=entry, timeout=5)
