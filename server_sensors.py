@@ -16,7 +16,7 @@ try:
     entry = {'source': SOURCE}
     result = list(db.entries.find({'source': "gps"}).sort([("t_utc", pymongo.DESCENDING)]).limit(1))[0]
     lat, lon = result['latitude'], result['longitude']
-    entry.update({'latitude': result['latitude'], 'longitude': result['longitude']})
+    entry.update({'latitude': result['latitude'], 'longitude': result['longitude'], 'altitude_m': result['altitude_m']})
 except Exception as e:
     log.info(log.exc(e))
     exit()
