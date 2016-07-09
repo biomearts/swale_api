@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 
-import os, sys, json, requests, pymongo
+#import pkg_resources
+#pkg_resources.require("requests>=2.10.0")
+
+import sys
+sys.path.insert(0, "/usr/local/lib/python3.4/dist-packages/")
+
+import os, sys, json, pymongo, requests
 from housepy import config, log, util, geo
 from mongo import db
 
