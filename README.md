@@ -1,11 +1,11 @@
 # Swale API
 
 ## GET data
-`/[source]/[start]/[end]/[output?]/?[field]=[value]`
+`/[source]/[start]/[end]/[page?]/?[field]=[value]`
 
 - `source` is the primary source, may be a comma-separated list  
 - `start` and `end` are any date format in `America/New_York` timezone (can be `*` for open-ended)  
-- `output` is the desired output format, optional (not implemented -- always json)  
+- `page` is the page number -- pages are 100 entries each and start at 1
 - `field` is a filter by the `value` of some property of the data  
 
 ## POST data

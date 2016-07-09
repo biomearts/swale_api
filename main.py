@@ -1,26 +1,30 @@
 #!/usr/bin/env python3
 
-import os, sys, json, markdown, actions
+import os, sys, json, markdown, actions, math
 from housepy import config, log, server, util, process, strings
 
 process.secure_pid(os.path.abspath(os.path.join(os.path.dirname(__file__), "run")))
 
 class Home(server.Handler):
 
-    def get(self, source=None, start=None, end=None, mod=None):
+    def get(self, source=None, start=None, end=None, page=None):
         self.set_header("Access-Control-Allow-Origin", "*")
         if len(source):
+            page = 1 if page is None or not len(page) else strings.as_numeric(page)
             if not len(start):
                 start = "*"
             if not len(end):
                 end = "*"
             try:
                 filters = {key: strings.as_numeric(value[0]) for (key, value) in self.request.arguments.items()}
-                results, start_t, end_t = actions.retrieve(self.db, source, start, end, filters, (strings.slugify(mod) if (mod is not None and len(mod)) else None))
+                results, start_t, end_t, count = actions.retrieve(self.db, source, start, end, filters, page)
                 data = {'query': {'sources': source, 'start': util.datestring(start_t, tz=config['tz']), 'end': util.datestring(end_t, tz=config['tz']), 'filters': filters}}
                 # log.info(data)
                 data['results'] = results
-                data['count'] = len(results)
+                data['results_total'] = count
+                data['results_returned'] = len(results)
+                data['page'] = page
+                data['pages'] = math.ceil(count / 100)
                 return self.json(data)
             except Exception as e:
                 log.error(log.exc(e))
@@ -52,7 +56,7 @@ class Home(server.Handler):
 
 
 handlers = [
-    (r"/?([^/]*)/?([^/]*)/?([^/]*)/?", Home),
+    (r"/?([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)", Home),
 ]    
 
 server.start(handlers)

@@ -24,7 +24,7 @@ def insert(db, data):
     entry_id = db.entries.insert_one(data).inserted_id
     return entry_id
 
-def retrieve(db, source, start, end, filters, mod=None):
+def retrieve(db, source, start, end, filters, page=None):
     if filters == None:
         filters = {}
     sources = [clean(source) for source in source.split(",")]    
@@ -33,13 +33,14 @@ def retrieve(db, source, start, end, filters, mod=None):
     template = {'t_utc': {'$gt': start_t, '$lt': end_t}, '$or': [{'source': source} for source in sources]}
     template.update(filters)
     log.info("QUERY %s" % template)    
-    if mod == "unqiue":
-        results = db.entries.distinct(template)
-    else:
-        results = db.entries.find(template)
-    results.sort('t_utc')
+    results = db.entries.find(template).sort('t_utc')
+    count = results.count()
+    if page is not None:
+        skip = (page - 1) * 100
+        log.debug('skip %s' % skip)
+        results = results.skip(skip).limit(100)    
     log.info("--> done")
-    return list(results), start_t, end_t
+    return list(results), start_t, end_t, count
 
 def clean(s):
     return strings.slugify(strings.depunctuate(s, "_"))
