@@ -38,7 +38,7 @@ def retrieve(db, source, start, end, filters, page=None):
     if page is None:
         page = (count // 100) + 1
     skip = (page - 1) * 100
-    log.debug('skip %s' % skip)
+    log.debug("page %s, skip %s" % (page, skip))
     results = results.skip(skip).limit(100)    
     log.info("--> done")
     return list(results), start_t, end_t, count, page

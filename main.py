@@ -10,7 +10,7 @@ class Home(server.Handler):
     def get(self, source=None, start=None, end=None, page=None):
         self.set_header("Access-Control-Allow-Origin", "*")
         if len(source):
-            page = 1 if page is None or not len(page) else strings.as_numeric(page)
+            page = None if page is None or not len(page) else strings.as_numeric(page)
             if not len(start):
                 start = "*"
             if not len(end):
