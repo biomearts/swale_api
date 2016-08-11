@@ -17,7 +17,7 @@ class Home(server.Handler):
                 end = "*"
             try:
                 filters = {key: strings.as_numeric(value[0]) for (key, value) in self.request.arguments.items()}
-                results, start_t, end_t, count = actions.retrieve(self.db, source, start, end, filters, page)
+                results, start_t, end_t, count, page = actions.retrieve(self.db, source, start, end, filters, page)
                 data = {'query': {'sources': source, 'start': util.datestring(start_t, tz=config['tz']), 'end': util.datestring(end_t, tz=config['tz']), 'filters': filters}}
                 # log.info(data)
                 data['results'] = results

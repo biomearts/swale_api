@@ -22,7 +22,7 @@ args = {key: value[0] if (value is not None) else None for (key, value) in args.
 
 
 
-results, start_t, end_t, count = actions.retrieve(db, args['source'], args['start'], args['end'], None)
+results, start_t, end_t, count, page = actions.retrieve(db, args['source'], args['start'], args['end'], None)
 
 
 ## this is unnecessary

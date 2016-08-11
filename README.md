@@ -5,7 +5,7 @@
 
 - `source` is the primary source, may be a comma-separated list  
 - `start` and `end` are any date format in `America/New_York` timezone (can be `*` for open-ended)  
-- `page` is the page number -- pages are 100 entries each and start at 1
+- `page` is the page number -- pages are 100 entries each and start at 1. Last page is returned by default
 - `field` is a filter by the `value` of some property of the data  
 
 ## POST data

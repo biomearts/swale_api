@@ -35,12 +35,13 @@ def retrieve(db, source, start, end, filters, page=None):
     log.info("QUERY %s" % template)    
     results = db.entries.find(template).sort('t_utc')
     count = results.count()
-    if page is not None:
-        skip = (page - 1) * 100
-        log.debug('skip %s' % skip)
-        results = results.skip(skip).limit(100)    
+    if page is None:
+        page = (count // 100) + 1
+    skip = (page - 1) * 100
+    log.debug('skip %s' % skip)
+    results = results.skip(skip).limit(100)    
     log.info("--> done")
-    return list(results), start_t, end_t, count
+    return list(results), start_t, end_t, count, page
 
 def clean(s):
     return strings.slugify(strings.depunctuate(s, "_"))
