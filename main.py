@@ -36,7 +36,8 @@ class Home(server.Handler):
                 readme = markdown.markdown(text)
         except Exception as e:
             log.error(log.exc(e))
-        return self.render("index.html", readme=readme)
+        sources = self.db.entries.find().distinct('source')            
+        return self.render("index.html", readme=readme, sources=sources)
 
     def post(self, nop=None, nop2=None, nop3=None, nop4=None):
         log.info("POST")

@@ -2,6 +2,17 @@
 
 {% block body %}
 
+<h1>Current sources</h1>
+<ul>
+{% for source in sources %}
+    <li><code>{{ source }}</code></li>
+{% endfor %}
+</ul>
+
+<br />
+<hr />
+<br />
+
 {{ readme }}
 
 {% endblock body %}
