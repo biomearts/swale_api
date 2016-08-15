@@ -8,6 +8,12 @@
 - `page` is the page number -- pages are 100 entries each and start at 1, last page is returned by default
 - `field` is a filter by the `value` of some property of the data  
 
+### Examples
+
+Return the most recent data from the tower (which includes temperature and wind speed) and the server (things like sun position and tides):  
+`http://54.235.200.47/tower,server/`
+
+
 ## POST data
 
 ### Required:
